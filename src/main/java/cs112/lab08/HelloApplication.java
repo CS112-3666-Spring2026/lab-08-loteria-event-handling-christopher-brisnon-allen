@@ -1,14 +1,22 @@
 package cs112.lab08;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class HelloApplication extends Application {
-
+//this is a test commit
     //CONSTANTS
 
     //array of LoteriaCards to use for game:
@@ -19,12 +27,70 @@ public class HelloApplication extends Application {
             new LoteriaCard("La ingeniería", "9.png", 9),
     };
 
+    //COMPONENT INSTANCES
+    ImageView cardImageView;
+    Label  messageLabel;
+
 
     @Override
     public void start(Stage stage) throws IOException {
-        //removed FXML code, fill this in with components, scene, stage, etc.
+        LoteriaCard cardLogo = new LoteriaCard();
+
+        //SETUP COMPONENTS
+        Label titleLabel = new Label("Welcome to EChALE STEM Loteria!");
+        cardImageView = new ImageView(cardLogo.getImage());
+        messageLabel = new Label("Click the button below to randomly draw a card");
+        Button drawCardButton = new Button("Draw Random Card");
+
+        //CUSTOMIZE COMPONENTS
+        cardImageView.setFitWidth(300);
+        cardImageView.setPreserveRatio(true);
+        titleLabel.setFont(new Font(20.0));
+        drawCardButton.setOnAction( //anonymous handling
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+
+                        //get random card
+                        int randomInt = (int) (Math.random() * LOTERIA_CARDS.length);
+                        LoteriaCard randomCard = LOTERIA_CARDS[randomInt];
+
+                        //image changes to card image
+                        cardImageView.setImage(randomCard.getImage());
+
+                        //message label changes card name
+                        messageLabel.setText(randomCard.getCardName());
+                    }
+                }
+        );
+
+        //ADD COMPONENTS
+        VBox vbox = new VBox();
+        vbox.getChildren().addAll(titleLabel, cardImageView, messageLabel, drawCardButton);
+        vbox.setAlignment(Pos.CENTER);
+
+        //SETUP SCENE AND SHOW
+        Scene scene = new Scene(vbox, 350, 500);
+        stage.setScene(scene);
+        stage.setTitle("EChALE STEM Loteria");
+        stage.show();
     }
 
+    /*HANDLE METHOD non-anonymous
+    @Override
+    public void handle(ActionEvent actionEvent) {
+
+        //get random card
+        int randomInt = (int) (Math.random() * LOTERIA_CARDS.length);
+        LoteriaCard randomCard = LOTERIA_CARDS[randomInt];
+
+        //image changes to card image
+        cardImageView.setImage(randomCard.getImage());
+
+        //message label changes card name
+        messageLabel.setText(randomCard.getCardName());
+    }
+    */
     public static void main(String[] args) {
         launch();
     }
